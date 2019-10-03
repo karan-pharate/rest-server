@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 const port = 8080;
+app.use(bodyParser.json());
 let posts = [
   { id: "1", title: "post 1", description: "some description" },
   { id: "2", title: "post 2", description: "some description" },
@@ -45,10 +47,10 @@ app.get("/api/comment/:postId", (req, res) => {
 });
 
 app.post("/api/post", (req, res) => {
-   console.log(req.body )
+  posts.push(req.body);
+  res.json(posts);
 });
 
 app.listen(port, () => {
   console.log(`port listening on port ${port}`);
 });
-
