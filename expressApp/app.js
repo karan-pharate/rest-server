@@ -52,18 +52,21 @@ app.post("/api/post", (req, res) => {
 });
 
 app.put("/api/post", (req, res) => {
-    let Id = req.body.id;
-    let posts1 = posts.map(obj => {
-        if(obj.id == Id) {    
-        return req.body;
-        } else {
-        return obj;
-        }
-    });
-    res.json(posts1)
-})
-
-
+  let Id = req.body.id;
+  let posts1 = posts.map(obj => {
+    if (obj.id == Id) {
+      return req.body;
+    } else {
+      return obj;
+    }
+  });
+  res.json(posts1);
+});
+app.delete("/api/post/:id", (req, res) => {
+  let id = req.params.id;
+  posts.splice(id - 1, 1);
+  res.json(posts);
+});
 app.listen(port, () => {
   console.log(`port listening on port ${port}`);
 });
