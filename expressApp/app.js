@@ -51,6 +51,19 @@ app.post("/api/post", (req, res) => {
   res.json(posts);
 });
 
+app.put("/api/post", (req, res) => {
+    let Id = req.body.id;
+    let posts1 = posts.map(obj => {
+        if(obj.id == Id) {    
+        return req.body;
+        } else {
+        return obj;
+        }
+    });
+    res.json(posts1)
+})
+
+
 app.listen(port, () => {
   console.log(`port listening on port ${port}`);
 });
