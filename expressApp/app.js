@@ -43,33 +43,44 @@ app.get("/api/post", (req, res) => {
 //Get posts by id
 app.get("/api/post/:id", (req, res) => {
   let Id = req.params.id;
+  let index = posts.findIndex(obj => {
+    return obj.id == Id;
+  });
   let postData = posts.filter(post => {
     return post.id === Id;
   });
-  res.json({ postData });
+  if (index == -1) {
+    res.status(404).json({
+      success: false,
+      error: "post not found"
+    });
+  } else {
+    res.json({ postData });
+  }
 });
+
 //Post method
 app.post("/api/post", (req, res) => {
   posts.push(req.body);
   res.json(posts);
 });
 //Put method
-app.put("/api/post", (req, res) => {
-  let Id = req.body.id;
+app.put("/api/post/:id", (req, res) => {
+  let Id = req.params.id;
   let index = posts.findIndex(obj => {
     return obj.id == Id;
   });
-  if(index == -1){
-    res.json({
-      success:  false,
+  if (index == -1) {
+    res.status(404).json({
+      success: false,
       error: "index not matched!"
     });
-  }else {
-  posts[index] = req.body;
-  res.json({
-    success:  true
-  });
-}
+  } else {
+    posts[index] = req.body;
+    res.json({
+      success: true
+    });
+  }
 });
 //Delete method
 app.delete("/api/post/:Id", (req, res) => {
@@ -77,83 +88,93 @@ app.delete("/api/post/:Id", (req, res) => {
   let index = posts.findIndex(obj => {
     return obj.id == id;
   });
-  if(index == -1){
-    res.json({
-      success:  false,
-      error: "index not matched!"
+  if (index == -1) {
+    res.status(404).json({
+      success: false,
+      error: "post not found!"
     });
-  }else {
-  posts.splice(index, 1);
-  res.json({
-    success:  true
-  });
-}
+  } else {
+    posts.splice(index, 1);
+    res.json({
+      success: true
+    });
+  }
 });
 //Get Comments by postid
 app.get("/api/comment", (req, res) => {
-    let id = req.query.postId;
-    let commentData = comments.filter(comment => {
-      return comment.postId === id;
-    });
-    if(id === undefined)
-    {
-      res.json({comments});
-    }
-    else {
-    res.json({ commentData });
-    }
+  let id = req.query.postId;
+  let index = posts.findIndex(obj => {
+    return obj.id == id;
   });
-  //post comments
-  app.post("/api/comment", (req, res) => {
-    let Id = req.body.postId;
-    let index = posts.findIndex(obj => {
-      return obj.id == Id;
+  let commentData = comments.filter(comment => {
+    return comment.postId === id;
+  });
+  console.log(index);
+  if (id === undefined) {
+    res.json({ comments });
+  } else if (index == -1) {
+    res.status(404).json({
+      success: false,
+      error: "post not found!!"
     });
-    if(index == -1){
-      res.json({
-        success:  false,
-      });
-    }else {
+  } else {
+    res.json({ commentData });
+  }
+});
+//post comments
+app.post("/api/comment", (req, res) => {
+  let Id = req.body.postId;
+  let index = posts.findIndex(obj => {
+    return obj.id == Id;
+  });
+  if (index == -1) {
+    res.json({
+      success: false,
+      error: "post not found!!"
+    });
+  } else {
     comments.push(req.body);
     res.json({
-      success:  true
+      success: true
     });
   }
-  })
-  app.put("/api/comment", (req, res) => {
-    let Id = req.body.postId;
-    let index = comments.findIndex(obj => {
-      return obj.postId == Id;
+});
+//Update comments
+app.put("/api/comment/:postId", (req, res) => {
+  let Id = req.body.postId;
+  let index = comments.findIndex(obj => {
+    return obj.id == Id;
+  });
+  if (index == -1) {
+    res.status(404).json({
+      success: false,
+      error: "Post not found!"
     });
-    if(index == -1){
-      res.json({
-        success:  false,
-        error: "index not matched!"
-      });
-    }else {
+  } else {
     comments[index] = req.body;
     res.json({
-      success:  true
+      success: true
     });
   }
-  })
-  app.delete("/api/comment/:postId", (req, res) => {
-    let id = req.params.postId;
-    let index = comments.findIndex(obj => {
-      return obj.postId == id;
+});
+//Delete comments
+app.delete("/api/comment/:postId", (req, res) => {
+  let id = req.params.postId;
+  let index = comments.findIndex(obj => {
+    return obj.postId == id;
+  });
+  if (index == -1) {
+    res.status(404).json({
+      success: false,
+      error: "Post not found!"
     });
-    if(index == -1){
-      res.json({
-        success:  false,
-        error: "index not matched!"
-      });
-    }else {
+  } else {
     comments.splice(index, 1);
     res.json({
-      success:  true
+      success: true
     });
   }
-  });
+});
 app.listen(port, () => {
   console.log(`port listening on port ${port}`);
 });
